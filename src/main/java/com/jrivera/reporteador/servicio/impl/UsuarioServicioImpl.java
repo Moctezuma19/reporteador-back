@@ -34,7 +34,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
         Rol rol = new Rol();
-        if(usuarioDto.getIdRol() == 2){
+        if (usuarioDto.getIdRol() == 2) {
             rol.setNombre("ingeniero");
         } else {
             rol.setNombre("usuario");
@@ -52,12 +52,23 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         if (usuario == null) {
             return null;
         }
+        if (usuarioRepositorio.existsByCorreo(usuarioDto.getCorreo())) {
+            LOG.info("devolvio nulo");
+            return null;
+        }
         usuario.setNombre(usuarioDto.getNombre());
         usuario.setApellido(usuarioDto.getApellido());
         usuario.setCorreo(usuarioDto.getCorreo());
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
+        if (usuarioDto.getPassword().length() > 0) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
+        }
         Rol rol = new Rol();
+        if (usuarioDto.getIdRol() == 2) {
+            rol.setNombre("ingeniero");
+        } else {
+            rol.setNombre("usuario");
+        }
         rol.setIdRol(usuarioDto.getIdRol());
         usuario.setRol(rol);
         return usuarioRepositorio.saveAndFlush(usuario);
