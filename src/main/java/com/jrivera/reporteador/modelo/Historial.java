@@ -2,10 +2,7 @@ package com.jrivera.reporteador.modelo;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Data
@@ -16,5 +13,9 @@ public class Historial {
     private Integer idHistorial;
     private Integer idAsignacion;
     private Timestamp actualizacion;
-    private String solucion;
+    @Column(insertable = false, updatable = false)
+    private Integer idSolucion;
+    @OneToOne
+    @JoinColumn(referencedColumnName = "idSolucion", name = "idSolucion")
+    private Solucion solucion;
 }

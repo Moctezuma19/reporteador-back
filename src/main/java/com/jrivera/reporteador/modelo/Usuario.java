@@ -10,13 +10,9 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idUsuario;
-    @Column
     private String nombre;
-    @Column
     private String apellido;
-    @Column
     private String correo;
-    @Column
     private String password;
 
     @ManyToOne

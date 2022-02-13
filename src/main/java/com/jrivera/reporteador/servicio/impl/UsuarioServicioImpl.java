@@ -5,22 +5,26 @@ import com.jrivera.reporteador.modelo.Rol;
 import com.jrivera.reporteador.modelo.Usuario;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
 import com.jrivera.reporteador.servicio.UsuarioServicio;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 
 @Service
 public class UsuarioServicioImpl implements UsuarioServicio {
 
+    private final Logger LOG = LoggerFactory.getLogger(UsuarioServicioImpl.class);
     @Autowired
     UsuarioRepositorio usuarioRepositorio;
 
     @Override
     public Usuario guarda(UsuarioDto usuarioDto) {
+        //LOG.info("Tratando de insertart -> " + usuarioDto);
         if (usuarioRepositorio.existsByCorreo(usuarioDto.getCorreo())) {
+            LOG.info("devolvio nulo");
             return null;
         }
         Usuario usuario = new Usuario();
@@ -30,9 +34,16 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
         Rol rol = new Rol();
+        if(usuarioDto.getIdRol() == 2){
+            rol.setNombre("ingeniero");
+        } else {
+            rol.setNombre("usuario");
+        }
         rol.setIdRol(usuarioDto.getIdRol());
+
         usuario.setRol(rol);
-        return usuarioRepositorio.saveAndFlush(usuario);
+        usuario = usuarioRepositorio.saveAndFlush(usuario);
+        return usuario;
     }
 
     @Override

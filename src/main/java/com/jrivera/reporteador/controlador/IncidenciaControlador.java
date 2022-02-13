@@ -14,7 +14,8 @@ public class IncidenciaControlador {
 
     @PutMapping("/crea")
     public Incidencia crea(@RequestBody Incidencia incidencia) {
-        return incidenciaServicio.crea(incidencia);
+        return null;
+        //return incidenciaServicio.crea(incidencia);
     }
 
     @GetMapping("/asigna/{idUsuario}")

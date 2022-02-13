@@ -10,9 +10,7 @@ public class Asignacion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idAsignacion;
-    @Column
     private Integer idUsuario;
-    @Column
     private Integer idIncidencia;
 
 }

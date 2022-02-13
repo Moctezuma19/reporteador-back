@@ -11,20 +11,16 @@ public class Incidencia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idIncidencia;
-    @Column
     private String titulo;
-    @Column
     private String descripcion;
-    @Column
     private Timestamp creacion;
-    @Column
     private Timestamp actualizacion;
-    @Column
     private Timestamp cierre;
-    @Column
     private Integer idUsuario;
-    @Column
     private Integer estado;
-    @Column
-    private String solucion;
+    @Column(insertable = false, updatable = false)
+    private Integer idSolucion;
+    @OneToOne
+    @JoinColumn(referencedColumnName = "idSolucion", name = "idSolucion")
+    private Solucion solucion;
 }

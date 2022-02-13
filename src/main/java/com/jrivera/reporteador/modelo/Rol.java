@@ -11,6 +11,5 @@ import javax.persistence.Id;
 public class Rol {
     @Id
     private Integer idRol;
-    @Column
     private String nombre;
 }
