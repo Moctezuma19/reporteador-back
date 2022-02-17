@@ -1,7 +1,9 @@
 package com.jrivera.reporteador.servicio.impl;
 
+import com.jrivera.reporteador.dto.IncidenciaDto;
 import com.jrivera.reporteador.modelo.Asignacion;
 import com.jrivera.reporteador.modelo.Incidencia;
+import com.jrivera.reporteador.modelo.Usuario;
 import com.jrivera.reporteador.repositorio.AsignacionRepositorio;
 import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service
 public class IncidenciaServicioImpl implements IncidenciaServicio {
@@ -24,7 +27,11 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
     AsignacionRepositorio asignacionRepositorio;
 
     @Override
-    public Incidencia crea(Incidencia incidencia) {
+    public Incidencia crea(IncidenciaDto incidenciaDto) {
+        Incidencia incidencia = new Incidencia();
+        incidencia.setIdUsuario(incidenciaDto.getIdUsuario());
+        incidencia.setTitulo(incidenciaDto.getTitulo());
+        incidencia.setDescripcion(incidencia.getDescripcion());
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         incidencia.setCreacion(currentTime);
         incidencia.setActualizacion(currentTime);
@@ -46,5 +53,24 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         asignacion.setIdUsuario(idUsuario);
         asignacionRepositorio.save(asignacion);
         return true;
+    }
+
+    @Override
+    public List<Incidencia> obtenTodas(Integer idUsuario) {
+        Usuario usuario = usuarioRepositorio.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            return null;
+        }
+        
+        switch (usuario.getRol().getIdRol()) {
+            case 1:
+                return incidenciaRepositorio.findAll();
+            case 2:
+                return incidenciaRepositorio.findAllByIdAsignado(idUsuario);
+            case 3:
+                return incidenciaRepositorio.findAllByIdUsuario(idUsuario);
+            default:
+                return null;
+        }
     }
 }

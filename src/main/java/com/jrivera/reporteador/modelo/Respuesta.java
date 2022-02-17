@@ -6,16 +6,16 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.sql.Timestamp;
 
 @Data
 @Entity
-public class Solucion {
+public class Respuesta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer idSolucion;
+    private Integer idRespuesta;
+    private Integer idIncidencia;
+    private Integer idUsuario;
     private String descripcion;
-    private String img_ruta1;
-    private String img_ruta2;
-    private String img_ruta3;
-    private String img_ruta4;
+    private Timestamp actualizacion;
 }

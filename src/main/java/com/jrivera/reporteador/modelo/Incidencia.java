@@ -18,9 +18,4 @@ public class Incidencia {
     private Timestamp cierre;
     private Integer idUsuario;
     private Integer estado;
-    @Column(insertable = false, updatable = false)
-    private Integer idSolucion;
-    @OneToOne
-    @JoinColumn(referencedColumnName = "idSolucion", name = "idSolucion")
-    private Solucion solucion;
 }
