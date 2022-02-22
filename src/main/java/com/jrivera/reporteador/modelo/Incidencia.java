@@ -17,5 +17,10 @@ public class Incidencia {
     private Timestamp actualizacion;
     private Timestamp cierre;
     private Integer idUsuario;
+    @ManyToOne
+    @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario", insertable = false, updatable = false)
+    private Usuario usuario;
     private Integer estado;
+    @OneToOne(mappedBy = "incidencia")
+    private Asignacion asignacion;
 }

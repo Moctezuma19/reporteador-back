@@ -28,8 +28,13 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
 
     @Override
     public Incidencia crea(IncidenciaDto incidenciaDto) {
+        Usuario usuario = usuarioRepositorio.findById(incidenciaDto.getIdUsuario()).orElse(null);
+        if (usuario == null) {
+            return null;
+        }
         Incidencia incidencia = new Incidencia();
         incidencia.setIdUsuario(incidenciaDto.getIdUsuario());
+        incidencia.setUsuario(usuario);
         incidencia.setTitulo(incidenciaDto.getTitulo());
         incidencia.setDescripcion(incidencia.getDescripcion());
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
@@ -40,19 +45,24 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
     }
 
     @Override
-    public Boolean asigna(Integer idUsuario, Integer idIncidencia) {
-        if (!incidenciaRepositorio.existsById(idIncidencia)) {
-            return false;
+    public Usuario asigna(Integer idUsuario, Integer idIncidencia) {
+        Incidencia incidencia = incidenciaRepositorio.findById(idIncidencia).orElse(null);
+        if (incidencia == null) {
+            return null;
         }
-        if (!usuarioRepositorio.existsById(idUsuario)) {
-            return false;
+        Usuario usuario = usuarioRepositorio.findById(idUsuario).orElse(null);
+        if (usuario == null) {
+            return null;
         }
 
         Asignacion asignacion = new Asignacion();
         asignacion.setIdIncidencia(idIncidencia);
         asignacion.setIdUsuario(idUsuario);
+        asignacion.setUsuario(usuario);
         asignacionRepositorio.save(asignacion);
-        return true;
+        incidencia.setEstado(1);
+        incidenciaRepositorio.save(incidencia);
+        return usuario;
     }
 
     @Override
@@ -61,7 +71,7 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         if (usuario == null) {
             return null;
         }
-        
+
         switch (usuario.getRol().getIdRol()) {
             case 1:
                 return incidenciaRepositorio.findAll();

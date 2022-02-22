@@ -2,6 +2,7 @@ package com.jrivera.reporteador.controlador;
 
 import com.jrivera.reporteador.dto.UsuarioDto;
 import com.jrivera.reporteador.modelo.Usuario;
+import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
 import com.jrivera.reporteador.servicio.UsuarioServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,9 @@ import java.util.List;
 public class UsuarioControlador {
     @Autowired
     UsuarioServicio usuarioServicio;
+
+    @Autowired
+    UsuarioRepositorio usuarioRepositorio;
 
     @PutMapping("/registra")
     public Usuario registra(@RequestBody UsuarioDto usuarioDto) {
@@ -32,6 +36,11 @@ public class UsuarioControlador {
     @GetMapping("/todos")
     public List<Usuario> todos() {
         return usuarioServicio.todos();
+    }
+
+    @GetMapping("/ingenieros")
+    public List<Usuario> ingenieros() {
+        return usuarioRepositorio.findAllByRolIdRol(2);
     }
 
 
