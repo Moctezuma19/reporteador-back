@@ -15,7 +15,6 @@ public class Incidencia {
     private String descripcion;
     private Timestamp creacion;
     private Timestamp actualizacion;
-    private Timestamp cierre;
     private Integer idUsuario;
     @ManyToOne
     @JoinColumn(name = "idUsuario", referencedColumnName = "idUsuario", insertable = false, updatable = false)

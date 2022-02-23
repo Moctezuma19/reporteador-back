@@ -21,7 +21,6 @@ CREATE TABLE `incidencia` (
     `descripcion` VARCHAR(2048) DEFAULT NULL,
     `creacion` DATETIME DEFAULT NULL,
     `actualizacion` DATETIME DEFAULT NULL,
-    `cierre` DATETIME DEFAULT NULL,
     `estado` INT DEFAULT 0,
     `idUsuario` INT(11) NOT NULL,
     CONSTRAINT `fk_Incidencia_1` FOREIGN KEY (`idUsuario`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE,

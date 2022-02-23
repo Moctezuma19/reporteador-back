@@ -1,11 +1,14 @@
 package com.jrivera.reporteador.servicio.impl;
 
 import com.jrivera.reporteador.dto.IncidenciaDto;
+import com.jrivera.reporteador.dto.RespuestaDto;
 import com.jrivera.reporteador.modelo.Asignacion;
 import com.jrivera.reporteador.modelo.Incidencia;
+import com.jrivera.reporteador.modelo.Respuesta;
 import com.jrivera.reporteador.modelo.Usuario;
 import com.jrivera.reporteador.repositorio.AsignacionRepositorio;
 import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
+import com.jrivera.reporteador.repositorio.RespuestaRepositorio;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
 import com.jrivera.reporteador.servicio.IncidenciaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
 
     @Autowired
     AsignacionRepositorio asignacionRepositorio;
+
+    @Autowired
+    RespuestaRepositorio respuestaRepositorio;
 
     @Override
     public Incidencia crea(IncidenciaDto incidenciaDto) {
@@ -82,5 +88,28 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
             default:
                 return null;
         }
+    }
+
+    @Override
+    public Respuesta crea(RespuestaDto respuestaDto) {
+        Incidencia incidencia = incidenciaRepositorio.findById(respuestaDto.getIdIncidencia()).orElse(null);
+        if (incidencia == null) {
+            return null;
+        }
+        Respuesta respuesta = new Respuesta();
+        respuesta.setIdIncidencia(respuestaDto.getIdIncidencia());
+        respuesta.setIdUsuario(respuestaDto.getIdUsuario());
+        respuesta.setDescripcion(respuestaDto.getDescripcion());
+        Timestamp t = new Timestamp(System.currentTimeMillis());
+        respuesta.setActualizacion(t);
+        respuesta = respuestaRepositorio.save(respuesta);
+
+        incidencia.setActualizacion(t);
+        if (respuestaDto.getCierre()) {
+            incidencia.setEstado(2);
+        }
+        incidenciaRepositorio.save(incidencia);
+
+        return respuesta;
     }
 }
