@@ -42,7 +42,7 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         incidencia.setIdUsuario(incidenciaDto.getIdUsuario());
         incidencia.setUsuario(usuario);
         incidencia.setTitulo(incidenciaDto.getTitulo());
-        incidencia.setDescripcion(incidencia.getDescripcion());
+        incidencia.setDescripcion(incidenciaDto.getDescripcion());
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         incidencia.setCreacion(currentTime);
         incidencia.setActualizacion(currentTime);

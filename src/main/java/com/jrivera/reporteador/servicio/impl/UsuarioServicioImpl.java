@@ -52,7 +52,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         if (usuario == null) {
             return null;
         }
-        if (usuarioRepositorio.existsByCorreo(usuarioDto.getCorreo())) {
+        if (!usuario.getCorreo().equals(usuarioDto.getCorreo()) && usuarioRepositorio.existsByCorreo(usuarioDto.getCorreo())) {
             LOG.info("devolvio nulo");
             return null;
         }
@@ -66,8 +66,10 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         Rol rol = new Rol();
         if (usuarioDto.getIdRol() == 2) {
             rol.setNombre("ingeniero");
-        } else {
+        } else if (usuarioDto.getIdRol() == 3) {
             rol.setNombre("usuario");
+        } else {
+            rol.setNombre("administrador");
         }
         rol.setIdRol(usuarioDto.getIdRol());
         usuario.setRol(rol);
