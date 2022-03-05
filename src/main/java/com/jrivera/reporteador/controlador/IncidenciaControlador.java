@@ -20,6 +20,8 @@ public class IncidenciaControlador {
     @Autowired
     IncidenciaServicio incidenciaServicio;
     @Autowired
+    IncidenciaRepositorio incidenciaRepositorio;
+    @Autowired
     RespuestaRepositorio respuestaRepositorio;
 
     @PutMapping("/crea")
@@ -45,6 +47,11 @@ public class IncidenciaControlador {
     @PutMapping("/responde")
     public Respuesta responde(@RequestBody RespuestaDto respuestaDto) {
         return incidenciaServicio.crea(respuestaDto);
+    }
+
+    @GetMapping("/descripcion/{idIncidencia}")
+    public String descripcion(@PathVariable Integer idIncidencia){
+        return incidenciaRepositorio.findDescripcionByIdIncidencia(idIncidencia);
     }
 
 

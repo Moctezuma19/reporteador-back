@@ -78,16 +78,26 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
             return null;
         }
 
+        List<Incidencia> incidencias = null;
+
         switch (usuario.getRol().getIdRol()) {
             case 1:
-                return incidenciaRepositorio.findAll();
+                incidencias = incidenciaRepositorio.findAll();
+                break;
             case 2:
-                return incidenciaRepositorio.findAllByIdAsignado(idUsuario);
+                incidencias = incidenciaRepositorio.findAllByIdAsignado(idUsuario);
+                break;
             case 3:
-                return incidenciaRepositorio.findAllByIdUsuario(idUsuario);
-            default:
-                return null;
+                incidencias = incidenciaRepositorio.findAllByIdUsuario(idUsuario);
         }
+        if (incidencias != null) {
+            for (Incidencia i : incidencias) {
+                i.setDescripcion(null);
+            }
+        }
+
+        return incidencias;
+
     }
 
     @Override

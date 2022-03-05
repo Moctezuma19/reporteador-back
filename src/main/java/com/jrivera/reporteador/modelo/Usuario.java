@@ -14,6 +14,7 @@ public class Usuario {
     private String apellido;
     private String correo;
     private String password;
+    private Boolean eliminado;
 
     @ManyToOne
     @JoinColumn(name = "idRol")

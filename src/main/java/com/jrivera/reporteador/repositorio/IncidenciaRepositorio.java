@@ -15,4 +15,7 @@ public interface IncidenciaRepositorio extends JpaRepository<Incidencia, Integer
     @Query("select i from Incidencia i where i.idIncidencia in (select a.idIncidencia from Asignacion a where a.idUsuario = ?1)")
     List<Incidencia> findAllByIdAsignado(Integer idAsignado);
 
+    @Query("select i.descripcion from Incidencia i where i.idIncidencia = ?1")
+    String findDescripcionByIdIncidencia(Integer idIncidencia);
+
 }

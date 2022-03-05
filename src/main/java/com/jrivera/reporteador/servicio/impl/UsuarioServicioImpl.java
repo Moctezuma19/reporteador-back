@@ -1,8 +1,12 @@
 package com.jrivera.reporteador.servicio.impl;
 
 import com.jrivera.reporteador.dto.UsuarioDto;
+import com.jrivera.reporteador.modelo.Asignacion;
+import com.jrivera.reporteador.modelo.Incidencia;
 import com.jrivera.reporteador.modelo.Rol;
 import com.jrivera.reporteador.modelo.Usuario;
+import com.jrivera.reporteador.repositorio.AsignacionRepositorio;
+import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
 import com.jrivera.reporteador.servicio.UsuarioServicio;
 import org.slf4j.Logger;
@@ -19,11 +23,15 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     private final Logger LOG = LoggerFactory.getLogger(UsuarioServicioImpl.class);
     @Autowired
     UsuarioRepositorio usuarioRepositorio;
+    @Autowired
+    AsignacionRepositorio asignacionRepositorio;
+    @Autowired
+    IncidenciaRepositorio incidenciaRepositorio;
 
     @Override
     public Usuario guarda(UsuarioDto usuarioDto) {
         //LOG.info("Tratando de insertart -> " + usuarioDto);
-        if (usuarioRepositorio.existsByCorreo(usuarioDto.getCorreo())) {
+        if (usuarioRepositorio.existsByCorreoAndEliminadoIsFalse(usuarioDto.getCorreo())) {
             LOG.info("devolvio nulo");
             return null;
         }
@@ -52,7 +60,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         if (usuario == null) {
             return null;
         }
-        if (!usuario.getCorreo().equals(usuarioDto.getCorreo()) && usuarioRepositorio.existsByCorreo(usuarioDto.getCorreo())) {
+        if (!usuario.getCorreo().equals(usuarioDto.getCorreo()) && usuarioRepositorio.existsByCorreoAndEliminadoIsFalse(usuarioDto.getCorreo())) {
             LOG.info("devolvio nulo");
             return null;
         }
@@ -82,13 +90,36 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         if (usuario == null) {
             return false;
         }
-        usuarioRepositorio.delete(usuario);
+        usuario.setEliminado(true);
+        if (usuario.getRol().getIdRol().equals(2)) {
+            List<Asignacion> asignaciones = asignacionRepositorio.findAllByIdUsuario(usuario.getIdUsuario());
+            List<Incidencia> incidencias = incidenciaRepositorio.findAllByIdAsignado(usuario.getIdUsuario());
+            for (Asignacion a : asignaciones) {
+                asignacionRepositorio.delete(a);
+            }
+            for (Incidencia i : incidencias) {
+                if (!i.getEstado().equals(2)) {
+                    i.setEstado(6);
+                    incidenciaRepositorio.save(i);
+                }
+            }
+
+        } else {
+            List<Incidencia> incidencias = incidenciaRepositorio.findAllByIdUsuario(usuario.getIdUsuario());
+            for (Incidencia i : incidencias) {
+                /*Asignacion asignacion = asignacionRepositorio.findByIdIncidencia(i.getIdIncidencia());
+                asignacionRepositorio.delete(asignacion);*/
+                incidenciaRepositorio.delete(i);
+            }
+        }
+        usuarioRepositorio.save(usuario);
+
         return true;
     }
 
     @Override
     public List<Usuario> todos() {
-        List<Usuario> usuarios = usuarioRepositorio.findAll();
+        List<Usuario> usuarios = usuarioRepositorio.findAllByEliminadoIsFalse();
         if (usuarios.size() == 0) {
             return null;
         }
