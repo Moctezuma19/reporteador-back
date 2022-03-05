@@ -11,6 +11,7 @@ CREATE TABLE `usuario` (
     `correo` VARCHAR(50) DEFAULT NULL,
     `password` VARCHAR(60) DEFAULT NULL,
     `idRol` INT(11) NOT NULL,
+    `eliminado` TINYINT(1) DEFAULT 0,
     CONSTRAINT `fk_Usuario_1` FOREIGN KEY (`idRol`) REFERENCES `rol` (`idRol`) ON DELETE CASCADE,
     PRIMARY KEY (`idUsuario`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
