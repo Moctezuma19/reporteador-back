@@ -9,5 +9,5 @@ public class RespuestaDto {
     private Integer idIncidencia;
     private Integer idUsuario;
     private String descripcion;
-    private Boolean cierre;
+    private Integer estado;
 }

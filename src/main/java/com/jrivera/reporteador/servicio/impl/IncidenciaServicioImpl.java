@@ -84,8 +84,6 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         asignacion.setIdUsuario(idUsuario);
         asignacion.setUsuario(usuario);
         asignacionRepositorio.save(asignacion);
-        incidencia.setEstado(1);
-        incidenciaRepositorio.save(incidencia);
         return usuario;
     }
 
@@ -133,9 +131,10 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         respuesta = respuestaRepositorio.save(respuesta);
 
         incidencia.setActualizacion(t);
-        if (respuestaDto.getCierre()) {
-            incidencia.setEstado(2);
+        if (respuestaDto.getEstado() != 0) {
+            incidencia.setEstado(respuestaDto.getEstado());
         }
+
         incidenciaRepositorio.save(incidencia);
 
         return respuesta;
