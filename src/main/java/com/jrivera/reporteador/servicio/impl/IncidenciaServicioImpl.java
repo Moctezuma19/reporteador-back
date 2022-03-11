@@ -10,6 +10,7 @@ import com.jrivera.reporteador.repositorio.AsignacionRepositorio;
 import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
 import com.jrivera.reporteador.repositorio.RespuestaRepositorio;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
+import com.jrivera.reporteador.servicio.ImagenServicio;
 import com.jrivera.reporteador.servicio.IncidenciaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,9 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
     @Autowired
     RespuestaRepositorio respuestaRepositorio;
 
+    @Autowired
+    ImagenServicio imagenServicio;
+
     @Override
     public Incidencia crea(IncidenciaDto incidenciaDto) {
         Usuario usuario = usuarioRepositorio.findById(incidenciaDto.getIdUsuario()).orElse(null);
@@ -47,7 +51,21 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         incidencia.setCreacion(currentTime);
         incidencia.setActualizacion(currentTime);
         incidencia.setEstado(0);
-        return incidenciaRepositorio.save(incidencia);
+        incidencia = incidenciaRepositorio.save(incidencia);
+
+        if (incidenciaDto.getImagen1() != null) {
+            String h = imagenServicio.guardaImagen(incidencia.getIdIncidencia(), incidenciaDto.getImagen1());
+            incidencia.setImagen1(h);
+        }
+
+        if (incidenciaDto.getImagen2() != null) {
+            String h = imagenServicio.guardaImagen(incidencia.getIdIncidencia(), incidenciaDto.getImagen2());
+            incidencia.setImagen2(h);
+        }
+
+        incidencia = incidenciaRepositorio.save(incidencia);
+
+        return incidencia;
     }
 
     @Override

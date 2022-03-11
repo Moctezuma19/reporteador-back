@@ -7,8 +7,10 @@ import com.jrivera.reporteador.modelo.Respuesta;
 import com.jrivera.reporteador.modelo.Usuario;
 import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
 import com.jrivera.reporteador.repositorio.RespuestaRepositorio;
+import com.jrivera.reporteador.servicio.ImagenServicio;
 import com.jrivera.reporteador.servicio.IncidenciaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,9 +25,11 @@ public class IncidenciaControlador {
     IncidenciaRepositorio incidenciaRepositorio;
     @Autowired
     RespuestaRepositorio respuestaRepositorio;
+    @Autowired
+    ImagenServicio imagenServicio;
 
-    @PutMapping("/crea")
-    public Incidencia crea(@RequestBody IncidenciaDto incidenciaDto) {
+    @PutMapping(path = "/crea", consumes = {"multipart/form-data"})
+    public Incidencia crea(@ModelAttribute IncidenciaDto incidenciaDto) {
         return incidenciaServicio.crea(incidenciaDto);
     }
 
@@ -50,7 +54,7 @@ public class IncidenciaControlador {
     }
 
     @GetMapping("/descripcion/{idIncidencia}")
-    public String descripcion(@PathVariable Integer idIncidencia){
+    public String descripcion(@PathVariable Integer idIncidencia) {
         return incidenciaRepositorio.findDescripcionByIdIncidencia(idIncidencia);
     }
 

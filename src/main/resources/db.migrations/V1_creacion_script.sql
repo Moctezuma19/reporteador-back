@@ -24,6 +24,8 @@ CREATE TABLE `incidencia` (
     `actualizacion` DATETIME DEFAULT NULL,
     `estado` INT DEFAULT 0,
     `idUsuario` INT(11) NOT NULL,
+    `imagen1` VARCHAR(64) DEFAULT NULL,
+    `imagen2` VARCHAR(64) DEFAULT NULL,
     CONSTRAINT `fk_Incidencia_1` FOREIGN KEY (`idUsuario`) REFERENCES `usuario` (`idUsuario`) ON DELETE CASCADE,
     PRIMARY KEY (`idIncidencia`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
