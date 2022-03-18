@@ -19,4 +19,16 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Integer> {
     List<Usuario> findAllByRolIdRol(Integer idRol);
 
     List<Usuario> findAllByEliminadoIsFalse();
+
+    @Query("select u from Usuario u where u.eliminado = false and concat(u.nombre, concat(' ', u.apellido)) like concat('%', concat(?1,'%') ) and u.correo like concat('%',concat(?2,'%')) and u.rol.idRol in (?3)")
+    List<Usuario> findAllByFilters(String nombre, String correo, List<Integer> idRoles);
+
+   /* @Query("select u from Usuario u where u.rol.idRol in (?1) and u.eliminado = false")
+    List<Usuario> findAllByIdRoles(List<Integer> idRoles);
+
+    @Query("select u from Usuario u where u.eliminado = false and u.correo like concat('%',concat(?1,'%')) and u.rol.idRol in (?2)")
+    List<Usuario> findAllByCorreoLikeAndIdRoles(String correoLike, List<Integer> idRoles);
+
+    @Query("select u from Usuario u where u.eliminado = false and concat(u.nombre, concat(' ', u.apellido)) like concat('%', concat(?1,'%')) and u.rol.idRol in (?3)")
+    List<Usuario> findAllByNombreLikeAndIdRoles(String nombreLike, List<Integer> idRoles);*/
 }

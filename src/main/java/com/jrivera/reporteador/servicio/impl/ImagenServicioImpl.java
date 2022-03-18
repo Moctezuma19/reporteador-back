@@ -34,7 +34,7 @@ public class ImagenServicioImpl implements ImagenServicio {
         }
         String hash = Codificador.Hash(idIncidencia, imagen.getName());
         try {
-            byte[] a = IOUtils.readAllBytes(imagen.getInputStream());
+            byte[] a = IOUtils.readFully(imagen.getInputStream(), -1, true);
             byte[] b64 = Base64.getEncoder().encode(a);
             FileOutputStream fileOutputStream = new FileOutputStream(ImagenesUrl + "/" + hash);
             fileOutputStream.write(b64);
@@ -57,7 +57,7 @@ public class ImagenServicioImpl implements ImagenServicio {
             }
             LOG.info("Obteniendo: " + ImagenesUrl + "/" + hash);
             InputStream in = new FileInputStream(f);
-            return IOUtils.readAllBytes(in);
+            return IOUtils.readFully(in, -1, true);
         } catch (IOException ie) {
             return null;
         }
