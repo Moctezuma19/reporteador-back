@@ -1,6 +1,6 @@
 package com.jrivera.reporteador.controlador;
 
-import com.jrivera.reporteador.dto.FiltroDto;
+import com.jrivera.reporteador.dto.FiltroUsuarioDto;
 import com.jrivera.reporteador.dto.UsuarioDto;
 import com.jrivera.reporteador.modelo.Usuario;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
@@ -45,8 +45,8 @@ public class UsuarioControlador {
     }
 
     @PostMapping("/filtra")
-    public List<Usuario> filtra(@RequestBody FiltroDto filtroDto) {
-        return usuarioRepositorio.findAllByFilters(filtroDto.getNombre(), filtroDto.getCorreo(), filtroDto.getIdRoles());
+    public List<Usuario> filtra(@RequestBody FiltroUsuarioDto filtroUsuarioDto) {
+        return usuarioRepositorio.findAllByFilters(filtroUsuarioDto.getNombre(), filtroUsuarioDto.getCorreo(), filtroUsuarioDto.getIdRoles());
     }
 
 

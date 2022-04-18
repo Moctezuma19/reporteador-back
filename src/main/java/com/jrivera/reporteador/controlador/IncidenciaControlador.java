@@ -1,5 +1,6 @@
 package com.jrivera.reporteador.controlador;
 
+import com.jrivera.reporteador.dto.FiltroIncidenciaDto;
 import com.jrivera.reporteador.dto.IncidenciaDto;
 import com.jrivera.reporteador.dto.RespuestaDto;
 import com.jrivera.reporteador.modelo.Incidencia;
@@ -9,16 +10,19 @@ import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
 import com.jrivera.reporteador.repositorio.RespuestaRepositorio;
 import com.jrivera.reporteador.servicio.ImagenServicio;
 import com.jrivera.reporteador.servicio.IncidenciaServicio;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @RestController
 @RequestMapping("/incidencia")
 public class IncidenciaControlador {
-
+    private final static Logger logger = LoggerFactory.getLogger(IncidenciaControlador.class);
     @Autowired
     IncidenciaServicio incidenciaServicio;
     @Autowired
@@ -56,6 +60,14 @@ public class IncidenciaControlador {
     @GetMapping("/descripcion/{idIncidencia}")
     public String descripcion(@PathVariable Integer idIncidencia) {
         return incidenciaRepositorio.findDescripcionByIdIncidencia(idIncidencia);
+    }
+
+    @PostMapping("/filtra")
+    public List<Incidencia> filtra(@RequestBody FiltroIncidenciaDto filtroIncidenciaDto) {
+        return incidenciaRepositorio.findAllByFilters(filtroIncidenciaDto.getTitulo(),
+                filtroIncidenciaDto.getEstados(),
+                new Timestamp(filtroIncidenciaDto.getCreacionInicio()),
+                new Timestamp(filtroIncidenciaDto.getCreacionFinal()));
     }
 
 

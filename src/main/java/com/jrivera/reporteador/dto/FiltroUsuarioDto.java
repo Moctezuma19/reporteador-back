@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class FiltroDto {
+public class FiltroUsuarioDto {
     private String correo;
     private String nombre;
     private List<Integer> idRoles;
