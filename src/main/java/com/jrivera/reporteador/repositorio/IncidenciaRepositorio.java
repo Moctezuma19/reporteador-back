@@ -24,4 +24,6 @@ public interface IncidenciaRepositorio extends JpaRepository<Incidencia, Integer
             + "and i.estado in (?2) and i.creacion >= ?3 and i.creacion <= ?4")
     List<Incidencia> findAllByFilters(String titulo, List<Integer> estados, Timestamp creacionInicio, Timestamp creacionFinal);
 
+    Incidencia findIncidenciaByIdIncidencia(Integer idIncidencia);
+
 }

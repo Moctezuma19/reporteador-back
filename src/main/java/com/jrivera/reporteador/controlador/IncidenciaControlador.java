@@ -17,12 +17,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
 @RequestMapping("/incidencia")
 public class IncidenciaControlador {
-    private final static Logger logger = LoggerFactory.getLogger(IncidenciaControlador.class);
+    private final static Logger LOG = LoggerFactory.getLogger(IncidenciaControlador.class);
     @Autowired
     IncidenciaServicio incidenciaServicio;
     @Autowired
@@ -31,6 +33,12 @@ public class IncidenciaControlador {
     RespuestaRepositorio respuestaRepositorio;
     @Autowired
     ImagenServicio imagenServicio;
+
+    @GetMapping("/{idIncidencia}")
+    public Incidencia obten(@PathVariable Integer idIncidencia){
+        //impedir que usuarios no relacionados no obtengan algo
+        return incidenciaRepositorio.findIncidenciaByIdIncidencia(idIncidencia);
+    }
 
     @PutMapping(path = "/crea", consumes = {"multipart/form-data"})
     public Incidencia crea(@ModelAttribute IncidenciaDto incidenciaDto) {
@@ -64,6 +72,11 @@ public class IncidenciaControlador {
 
     @PostMapping("/filtra")
     public List<Incidencia> filtra(@RequestBody FiltroIncidenciaDto filtroIncidenciaDto) {
+
+        Incidencia incidencia = incidenciaRepositorio.findIncidenciaByIdIncidencia(filtroIncidenciaDto.getIdIncidencia());
+        if (incidencia != null) {
+            return Collections.singletonList(incidencia);
+        }
         return incidenciaRepositorio.findAllByFilters(filtroIncidenciaDto.getTitulo(),
                 filtroIncidenciaDto.getEstados(),
                 new Timestamp(filtroIncidenciaDto.getCreacionInicio()),
