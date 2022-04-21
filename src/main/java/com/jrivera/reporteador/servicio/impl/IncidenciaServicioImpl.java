@@ -10,12 +10,16 @@ import com.jrivera.reporteador.repositorio.AsignacionRepositorio;
 import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
 import com.jrivera.reporteador.repositorio.RespuestaRepositorio;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
+import com.jrivera.reporteador.servicio.CorreoServicio;
 import com.jrivera.reporteador.servicio.ImagenServicio;
 import com.jrivera.reporteador.servicio.IncidenciaServicio;
+import com.jrivera.reporteador.util.Textos;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @Service
@@ -35,6 +39,12 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
 
     @Autowired
     ImagenServicio imagenServicio;
+
+    @Autowired
+    CorreoServicio correoServicio;
+
+    @Value("${reporteador.admin.correo}")
+    private String correoAdmin;
 
     @Override
     public Incidencia crea(IncidenciaDto incidenciaDto) {
@@ -65,6 +75,11 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
 
         incidencia = incidenciaRepositorio.save(incidencia);
 
+        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(currentTime);
+        String hora = new SimpleDateFormat("HH:mm").format(currentTime);
+        String contenido = String.format(Textos.INCIDENCIA_CREADA, usuario.getNombre() + " " + usuario.getApellido(),
+                usuario.getCorreo(), fecha, hora);
+        correoServicio.enviaCorreo("Nueva incidencia", contenido, correoAdmin);
         return incidencia;
     }
 
@@ -84,6 +99,14 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         asignacion.setIdUsuario(idUsuario);
         asignacion.setUsuario(usuario);
         asignacionRepositorio.save(asignacion);
+
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(currentTime);
+        String hora = new SimpleDateFormat("HH:mm").format(currentTime);
+        String contenido = String.format(Textos.ASIGNACION_PARA_INGENIERO, idIncidencia, fecha, hora);
+        String contenido_ = String.format(Textos.ASIGNACION_PARA_USUARIO, idIncidencia, fecha, hora);
+        correoServicio.enviaCorreo("Asignación", contenido, usuario.getCorreo());
+        correoServicio.enviaCorreo("Ingeniero de servicio asignado", contenido_, incidencia.getUsuario().getCorreo());
         return usuario;
     }
 
@@ -134,9 +157,15 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
         if (respuestaDto.getEstado() != 0) {
             incidencia.setEstado(respuestaDto.getEstado());
         }
-
         incidenciaRepositorio.save(incidencia);
 
+        String destinatario = incidencia.getUsuario().getIdUsuario().equals(respuesta.getIdUsuario()) ?
+                incidencia.getUsuario().getCorreo() : usuarioRepositorio.findCorreoByIdUsuario(respuesta.getIdUsuario());
+
+        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(t);
+        String hora = new SimpleDateFormat("HH:mm").format(t);
+        String contenido = String.format(Textos.RESPUESTA_RECIBIDA, respuesta.getIdIncidencia(), fecha, hora);
+        correoServicio.enviaCorreo("Respuesta recibida", contenido, destinatario);
         return respuesta;
     }
 }

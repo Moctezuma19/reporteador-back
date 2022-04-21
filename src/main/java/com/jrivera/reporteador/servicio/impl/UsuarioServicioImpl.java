@@ -8,10 +8,13 @@ import com.jrivera.reporteador.modelo.Usuario;
 import com.jrivera.reporteador.repositorio.AsignacionRepositorio;
 import com.jrivera.reporteador.repositorio.IncidenciaRepositorio;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
+import com.jrivera.reporteador.servicio.CorreoServicio;
 import com.jrivera.reporteador.servicio.UsuarioServicio;
+import com.jrivera.reporteador.util.Textos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -27,10 +30,13 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     AsignacionRepositorio asignacionRepositorio;
     @Autowired
     IncidenciaRepositorio incidenciaRepositorio;
+    @Autowired
+    CorreoServicio correoServicio;
+    @Value("${reporteador.url}")
+    private String servidorUrl;
 
     @Override
     public Usuario guarda(UsuarioDto usuarioDto) {
-        //LOG.info("Tratando de insertart -> " + usuarioDto);
         if (usuarioRepositorio.existsByCorreoAndEliminadoIsFalse(usuarioDto.getCorreo())) {
             LOG.info("devolvio nulo");
             return null;
@@ -51,6 +57,8 @@ public class UsuarioServicioImpl implements UsuarioServicio {
 
         usuario.setRol(rol);
         usuario = usuarioRepositorio.saveAndFlush(usuario);
+        String contenido = String.format(Textos.BIENVENIDA, usuario.getCorreo(), usuarioDto.getPassword(), servidorUrl + "/", servidorUrl + "/");
+        correoServicio.enviaCorreo("Bienvenido", contenido, usuario.getCorreo());
         return usuario;
     }
 

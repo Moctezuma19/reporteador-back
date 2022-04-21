@@ -23,6 +23,9 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Integer> {
     @Query("select u from Usuario u where u.eliminado = false and concat(u.nombre, concat(' ', u.apellido)) like concat('%', concat(?1,'%') ) and u.correo like concat('%',concat(?2,'%')) and u.rol.idRol in (?3)")
     List<Usuario> findAllByFilters(String nombre, String correo, List<Integer> idRoles);
 
+    @Query("select u.correo from Usuario u where u.idUsuario =?1")
+    String findCorreoByIdUsuario(Integer idUsuario);
+
    /* @Query("select u from Usuario u where u.rol.idRol in (?1) and u.eliminado = false")
     List<Usuario> findAllByIdRoles(List<Integer> idRoles);
 
