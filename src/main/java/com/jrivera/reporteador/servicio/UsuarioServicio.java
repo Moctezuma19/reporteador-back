@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface UsuarioServicio {
 
-    List<Usuario> todos();
+    List<Integer> todos();
 
     Usuario guarda(UsuarioDto usuarioDto);
 

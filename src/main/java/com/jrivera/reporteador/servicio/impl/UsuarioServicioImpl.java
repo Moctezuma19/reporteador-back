@@ -126,13 +126,10 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     }
 
     @Override
-    public List<Usuario> todos() {
-        List<Usuario> usuarios = usuarioRepositorio.findAllByEliminadoIsFalse();
+    public List<Integer> todos() {
+        List<Integer> usuarios = usuarioRepositorio.findAllByEliminadoIsFalse();
         if (usuarios.size() == 0) {
             return null;
-        }
-        for (Usuario u : usuarios) {
-            u.setPassword(null);
         }
         return usuarios;
     }

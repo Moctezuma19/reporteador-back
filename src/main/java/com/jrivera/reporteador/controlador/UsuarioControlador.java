@@ -19,6 +19,13 @@ public class UsuarioControlador {
     @Autowired
     UsuarioRepositorio usuarioRepositorio;
 
+    @GetMapping("/{idUsuario}")
+    public Usuario obten(@PathVariable Integer idUsuario){
+        Usuario usuario = usuarioRepositorio.findUsuarioByIdUsuario(idUsuario);
+        usuario.setPassword(null);
+        return usuario;
+    }
+
     @PutMapping("/registra")
     public Usuario registra(@RequestBody UsuarioDto usuarioDto) {
         return usuarioServicio.guarda(usuarioDto);
@@ -35,19 +42,18 @@ public class UsuarioControlador {
     }
 
     @GetMapping("/todos")
-    public List<Usuario> todos() {
+    public List<Integer> todos() {
         return usuarioServicio.todos();
     }
 
     @GetMapping("/ingenieros")
-    public List<Usuario> ingenieros() {
+    public List<Integer> ingenieros() {
         return usuarioRepositorio.findAllByRolIdRol(2);
     }
 
     @PostMapping("/filtra")
-    public List<Usuario> filtra(@RequestBody FiltroUsuarioDto filtroUsuarioDto) {
+    public List<Integer> filtra(@RequestBody FiltroUsuarioDto filtroUsuarioDto) {
         return usuarioRepositorio.findAllByFilters(filtroUsuarioDto.getNombre(), filtroUsuarioDto.getCorreo(), filtroUsuarioDto.getIdRoles());
     }
-
 
 }
