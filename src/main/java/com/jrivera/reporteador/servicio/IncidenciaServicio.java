@@ -14,7 +14,7 @@ public interface IncidenciaServicio {
 
     Usuario asigna(Integer idUsuario, Integer idIncidencia);
 
-    List<Incidencia> obtenTodas(Integer idUsuario);
+    List<Integer> obtenTodas(Integer idUsuario);
 
     Respuesta crea(RespuestaDto respuestaDto);
 

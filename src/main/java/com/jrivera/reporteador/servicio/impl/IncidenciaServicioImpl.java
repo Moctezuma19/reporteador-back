@@ -111,28 +111,23 @@ public class IncidenciaServicioImpl implements IncidenciaServicio {
     }
 
     @Override
-    public List<Incidencia> obtenTodas(Integer idUsuario) {
+    public List<Integer> obtenTodas(Integer idUsuario) {
         Usuario usuario = usuarioRepositorio.findById(idUsuario).orElse(null);
         if (usuario == null) {
             return null;
         }
 
-        List<Incidencia> incidencias = null;
+        List<Integer> incidencias = null;
 
         switch (usuario.getRol().getIdRol()) {
             case 1:
-                incidencias = incidenciaRepositorio.findAll();
+                incidencias = incidenciaRepositorio.findAllIdIncidencia();
                 break;
             case 2:
                 incidencias = incidenciaRepositorio.findAllByIdAsignado(idUsuario);
                 break;
             case 3:
                 incidencias = incidenciaRepositorio.findAllByIdUsuario(idUsuario);
-        }
-        if (incidencias != null) {
-            for (Incidencia i : incidencias) {
-                i.setDescripcion(null);
-            }
         }
 
         return incidencias;

@@ -101,7 +101,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         usuario.setEliminado(true);
         if (usuario.getRol().getIdRol().equals(2)) {
             List<Asignacion> asignaciones = asignacionRepositorio.findAllByIdUsuario(usuario.getIdUsuario());
-            List<Incidencia> incidencias = incidenciaRepositorio.findAllByIdAsignado(usuario.getIdUsuario());
+            List<Incidencia> incidencias = incidenciaRepositorio.findAllByIdAsignado_(usuario.getIdUsuario());
             for (Asignacion a : asignaciones) {
                 asignacionRepositorio.delete(a);
             }
@@ -113,11 +113,11 @@ public class UsuarioServicioImpl implements UsuarioServicio {
             }
 
         } else {
-            List<Incidencia> incidencias = incidenciaRepositorio.findAllByIdUsuario(usuario.getIdUsuario());
-            for (Incidencia i : incidencias) {
+            List<Integer> incidencias = incidenciaRepositorio.findAllByIdUsuario(usuario.getIdUsuario());
+            for (Integer i : incidencias) {
                 /*Asignacion asignacion = asignacionRepositorio.findByIdIncidencia(i.getIdIncidencia());
                 asignacionRepositorio.delete(asignacion);*/
-                incidenciaRepositorio.delete(i);
+                incidenciaRepositorio.deleteById(i);
             }
         }
         usuarioRepositorio.save(usuario);
