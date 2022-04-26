@@ -15,8 +15,8 @@ public interface UsuarioRepositorio extends JpaRepository<Usuario, Integer> {
     @Query("select u from Usuario u where u.correo = ?1 and u.eliminado = false")
     Usuario findByCorreo(String correo);
 
-    @Query("select u.idUsuario from Usuario u where u.rol.idRol = ?1 and u.eliminado = false")
-    List<Integer> findAllByRolIdRol(Integer idRol);
+    @Query("select u from Usuario u where u.rol.idRol = ?1 and u.eliminado = false")
+    List<Usuario> findAllByRolIdRol(Integer idRol);
 
     @Query("select u.idUsuario from Usuario u where u.eliminado = false")
     List<Integer> findAllByEliminadoIsFalse();

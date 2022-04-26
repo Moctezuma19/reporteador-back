@@ -47,7 +47,7 @@ public class UsuarioControlador {
     }
 
     @GetMapping("/ingenieros")
-    public List<Integer> ingenieros() {
+    public List<Usuario> ingenieros() {
         return usuarioRepositorio.findAllByRolIdRol(2);
     }
 
