@@ -45,6 +45,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
         usuario.setNombre(usuarioDto.getNombre());
         usuario.setApellido(usuarioDto.getApellido());
         usuario.setCorreo(usuarioDto.getCorreo());
+        usuario.setEliminado(false);
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         usuario.setPassword(passwordEncoder.encode(usuarioDto.getPassword()));
         Rol rol = new Rol();
