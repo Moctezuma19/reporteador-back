@@ -7,4 +7,6 @@ public interface Textos {
     String ASIGNACION_PARA_INGENIERO = "Ha sido asignado a la incidencia con identificador %s el día %s a las %s.";
     String ASIGNACION_PARA_USUARIO = "Se le ha asignado un ingeniero de servicio a su incidencia con identificador %s el día %s a las %s.";
     String RESPUESTA_RECIBIDA = "Ha recibido una respuesta a la incidencia con identificador %s el día %s a las %s.";
+    String ENCABEZADO = "Título: %s\nCreación: %s\nActualización: %s\n Autor: %s\nIngeniero de servicio: %s\nEstado: %s\nDescripción: %s";
+    String RESPUESTA = "Fecha: %s\nResponde: %s\n%s";
 }
