@@ -1,12 +1,5 @@
 package com.jrivera.reporteador.servicio.impl;
 
-import com.itextpdf.kernel.pdf.PdfDocument;
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.kernel.pdf.canvas.draw.SolidLine;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.LineSeparator;
-import com.itextpdf.layout.element.Paragraph;
-import com.itextpdf.layout.element.Text;
 import com.jrivera.reporteador.modelo.Asignacion;
 import com.jrivera.reporteador.modelo.Incidencia;
 import com.jrivera.reporteador.modelo.Respuesta;
@@ -17,6 +10,11 @@ import com.jrivera.reporteador.repositorio.RespuestaRepositorio;
 import com.jrivera.reporteador.repositorio.UsuarioRepositorio;
 import com.jrivera.reporteador.servicio.ReporteServicio;
 import com.jrivera.reporteador.util.Textos;
+import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import sun.misc.IOUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.List;
@@ -90,17 +85,14 @@ public class ReporteServicioImpl implements ReporteServicio {
         List<Respuesta> respuestas = respuestaRepositorio.findAllByIdIncidencia(idIncidencia);
 
         Timestamp ahora = new Timestamp(System.currentTimeMillis());
-        String nombreArchivo = carpetaTemporal + "/" + idIncidencia + "-" + ahora.getTime() + ".pdf";
+        String nombreArchivo = carpetaTemporal + "/" + idIncidencia + "-" + ahora.getTime();
 
         try {
-            PdfWriter escritorPDF = new PdfWriter(nombreArchivo);
-            PdfDocument pdfDoc = new PdfDocument(escritorPDF);
-            pdfDoc.addNewPage();
-            Document documento = new Document(pdfDoc);
-            Text texto = new Text("Reporte de incidencia " + idIncidencia);
-            texto.setBold();
-            Paragraph titulo = new Paragraph(texto);
-            documento.add(titulo);
+            BufferedWriter bw = new BufferedWriter(new FileWriter(nombreArchivo + ".html"));
+            bw.write("<html><body>");
+            String titulo = "<h1>Reporte de incidencia " + idIncidencia + "</h1>";
+            bw.write(titulo);
+            bw.newLine();
             String estado = obtenEstado(incidencia.getEstado());
             String encabezado = String.format(Textos.ENCABEZADO,
                     incidencia.getTitulo(),
@@ -112,29 +104,36 @@ public class ReporteServicioImpl implements ReporteServicio {
                             "Sin ingeniero de servicio asignado",
                     estado,
                     incidencia.getDescripcion());
-            Paragraph incidenciaEncabezado = new Paragraph(encabezado);
-            documento.add(incidenciaEncabezado);
-            SolidLine solidLine = new SolidLine(1f);
+            bw.write(encabezado);
+            bw.newLine();
 
-            LineSeparator separadorDeLinea = new LineSeparator(solidLine);
             for (Respuesta respuesta : respuestas) {
-                documento.add(separadorDeLinea);
+                bw.write("<hr/>");
                 Usuario usuario = usuarioRepositorio.findUsuarioByIdUsuario(respuesta.getIdUsuario());
                 String[] ar = respuesta.getDescripcion().split("#S:");
 
                 String descripcion =
-                        (ar.length == 1 ? "" : ("Cambió el estado a \"" + obtenEstado(Integer.parseInt(ar[1])) + "\"\n"))
+                        (ar.length == 1 ? "" : ("<p>Cambió el estado a <b>" + obtenEstado(Integer.parseInt(ar[1])) + "</b>.</p>\n"))
                                 + ar[0];
                 String respuesta_ = String.format(Textos.RESPUESTA,
                         respuesta.getActualizacion().toString(),
                         usuario.getNombre() + " " + usuario.getApellido(),
                         descripcion);
-                Paragraph incidenciaRespuesta = new Paragraph(respuesta_);
-                documento.add(incidenciaRespuesta);
+                bw.write(respuesta_);
+                bw.newLine();
             }
-            // Closing the document
-            documento.close();
-            return obtenReporte(nombreArchivo);
+            bw.write("</body></html>");
+            bw.close();
+            LOG.info("HTMl escrito!");
+            try (OutputStream os = new FileOutputStream(nombreArchivo + ".pdf")) {
+                PdfRendererBuilder builder = new PdfRendererBuilder();
+                builder.useFastMode();
+                builder.withUri(new File(nombreArchivo + ".html").toURI().toString());
+                builder.toStream(os);
+                builder.run();
+            }
+
+            return obtenReporte(nombreArchivo + ".pdf");
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }

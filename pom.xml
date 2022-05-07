@@ -12,10 +12,10 @@
     <artifactId>reporteador</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>reporteador</name>
-    <description>Demo project for Spring Boot</description>
+    <description>Proyecto de reporteador</description>
     <properties>
         <java.version>1.8</java.version>
-        <itext.version>7.2.2</itext.version>
+        <openhtml.version>1.0.10</openhtml.version>
     </properties>
     <dependencies>
         <dependency>
@@ -67,16 +67,19 @@
             <version>1.5.0-b01</version>
         </dependency>
         <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itext7-core</artifactId>
-            <version>${itext.version}</version>
-            <type>pom</type>
+            <groupId>com.j2html</groupId>
+            <artifactId>j2html</artifactId>
+            <version>1.5.0</version>
         </dependency>
-
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-core</artifactId>
+            <version>${openhtml.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>${openhtml.version}</version>
         </dependency>
     </dependencies>
 
